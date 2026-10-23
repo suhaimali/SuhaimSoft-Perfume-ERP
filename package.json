@@ -1,0 +1,23 @@
+{
+  "name": "suhaimsoft-perfume-management-system",
+  "version": "1.0.0",
+  "description": "SuhaimSoft Perfume Business Management ERP - Full-Stack MERN Web Application",
+  "private": true,
+  "scripts": {
+    "dev:server": "npm --prefix server run dev",
+    "dev:client": "npm --prefix client run dev",
+    "seed": "npm --prefix server run seed",
+    "test": "npm --prefix server test",
+    "build": "npm --prefix client run build"
+  },
+  "keywords": [
+    "perfume-management",
+    "erp",
+    "fragrance-business",
+    "mern",
+    "pos",
+    "inventory-management"
+  ],
+  "author": "SuhaimSoft - Presented by Suhaim Ali VP",
+  "license": "UNLICENSED"
+}

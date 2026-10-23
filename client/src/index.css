@@ -1,0 +1,243 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    --font-heading: 'Outfit', -apple-system, sans-serif;
+
+    /* Modern Light Palette */
+    --bg-page:       #F8FAFC;
+    --bg-sidebar:    #FFFFFF;
+    --bg-card:       #FFFFFF;
+    --bg-subtle:     #F1F5F9;
+
+    --border-subtle: #E2E8F0;
+    --border-strong: #CBD5E1;
+
+    --text-primary:  #0F172A;
+    --text-secondary:#334155;
+    --text-muted:    #64748B;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background-color: #F8FAFC;
+    color: #0F172A;
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3, .font-display {
+    font-family: var(--font-heading);
+    color: #0F172A;
+  }
+
+  ::selection {
+    background: #DBEAFE;
+    color: #1E40AF;
+  }
+}
+
+/* =========================================
+   CUSTOM SCROLLBAR — Light Slate
+   ========================================= */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: #F8FAFC; }
+::-webkit-scrollbar-thumb {
+  background: #CBD5E1;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover { background: #94A3B8; }
+
+/* Hide scrollbar completely while maintaining scroll functionality */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}
+.no-scrollbar {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+/* =========================================
+   CARDS — Clean Executive Light
+   ========================================= */
+.luxury-card,
+.stat-card {
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 1rem;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.04), 0 1px 2px -1px rgba(0, 0, 0, 0.04);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.luxury-card:hover,
+.stat-card:hover {
+  border-color: #CBD5E1;
+  box-shadow: 0 4px 14px 0 rgba(0, 0, 0, 0.06);
+  transform: translateY(-1px);
+}
+
+/* =========================================
+   BUTTONS
+   ========================================= */
+.ruby-gradient-btn,
+.btn-primary {
+  background: #2563EB;
+  color: #FFFFFF;
+  font-weight: 600;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  transition: all 0.15s ease;
+  border: none;
+}
+
+.ruby-gradient-btn:hover,
+.btn-primary:hover {
+  background: #1D4ED8;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+  transform: translateY(-1px);
+}
+
+.ruby-gradient-btn:active,
+.btn-primary:active { transform: translateY(0); }
+
+.btn-dark {
+  background: #FFFFFF;
+  color: #0F172A;
+  font-weight: 600;
+  border: 1px solid #CBD5E1;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+  transition: all 0.15s ease;
+}
+
+.btn-dark:hover {
+  background: #F8FAFC;
+  border-color: #94A3B8;
+}
+
+.blue-gradient-btn {
+  background: #EFF6FF;
+  color: #1D4ED8;
+  font-weight: 600;
+  border: 1px solid #BFDBFE;
+  transition: all 0.15s ease;
+}
+
+.blue-gradient-btn:hover {
+  background: #DBEAFE;
+}
+
+/* =========================================
+   BADGES — Light
+   ========================================= */
+.badge-blue {
+  background: #EFF6FF;
+  border: 1px solid #BFDBFE;
+  color: #1D4ED8;
+}
+
+.badge-slate {
+  background: #F1F5F9;
+  border: 1px solid #E2E8F0;
+  color: #475569;
+}
+
+.emerald-badge,
+.badge-emerald {
+  background: #ECFDF5;
+  border: 1px solid #A7F3D0;
+  color: #047857;
+}
+
+.badge-rose {
+  background: #FFF1F2;
+  border: 1px solid #FECDD3;
+  color: #BE123C;
+}
+
+.badge-violet {
+  background: #F5F3FF;
+  border: 1px solid #DDD6FE;
+  color: #6D28D9;
+}
+
+/* =========================================
+   TABLE STYLES — Clean Light
+   ========================================= */
+.table-header-light {
+  background: #F8FAFC;
+  color: #64748B;
+  border-bottom: 1px solid #E2E8F0;
+  font-weight: 600;
+  font-size: 0.6875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.table-row-light {
+  border-bottom: 1px solid #F1F5F9;
+  transition: background-color 0.15s ease;
+}
+
+.table-row-light:hover {
+  background-color: #F8FAFC;
+}
+
+/* =========================================
+   FOCUS STATES
+   ========================================= */
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: #2563EB !important;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12) !important;
+  outline: none !important;
+}
+
+/* =========================================
+   ANIMATIONS
+   ========================================= */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0);    }
+}
+
+.animate-fadeUp { animation: fadeUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) both; }
+
+/* =========================================
+   SIMPLE MINIMAL TOAST STYLING
+   ========================================= */
+[data-sonner-toaster] [data-sonner-toast] {
+  background: #FFFFFF !important;
+  color: #0F172A !important;
+  border: 1px solid #E2E8F0 !important;
+  border-radius: 12px !important;
+  box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.08), 0 8px 10px -6px rgba(15, 23, 42, 0.04) !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  padding: 10px 14px !important;
+}
+
+[data-sonner-toaster] [data-sonner-toast] [data-icon] {
+  margin-right: 8px !important;
+}
+
+[data-sonner-toaster] [data-sonner-toast][data-type="success"] [data-icon] {
+  color: #16A34A !important;
+}
+
+[data-sonner-toaster] [data-sonner-toast][data-type="error"] [data-icon] {
+  color: #DC2626 !important;
+}
+
+[data-sonner-toaster] [data-sonner-toast][data-type="info"] [data-icon] {
+  color: #2563EB !important;
+}
+
