@@ -55,7 +55,7 @@ export function createSaleInvoicePdfDoc(sale) {
   // 2. Invoice Metadata Block
   const infoY = 38;
 
-  // Left Column: Business & Branch Details
+  // Left Column: Business & Store Details
   doc.setTextColor(...primaryColor);
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(9);
@@ -373,7 +373,7 @@ export function createPaymentVoucherPdfDoc(payment) {
   // 2. Metadata Columns (No clunky nested boxes!)
   const infoY = 38;
 
-  // Left Column: Business & Branch Details
+  // Left Column: Business & Store Details
   doc.setTextColor(...primaryColor);
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(9);
