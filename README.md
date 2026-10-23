@@ -7,9 +7,9 @@
 
 ## 1. Executive Summary
 
-**SuhaimSoft Perfume Business Management ERP** is an enterprise-grade full-stack MERN application built specifically for luxury fragrance brands, boutique perfume shops, retail outlets, wholesale distributors, and multi-branch perfume houses.
+**SuhaimSoft Perfume Business Management ERP** is an enterprise-grade full-stack MERN application built specifically for luxury fragrance brands, boutique perfume shops, retail outlets, and single-store perfume boutiques.
 
-It provides centralized management of products, fragrance taxonomy, multi-warehouse stock balances, suppliers, customer loyalty, purchase orders, quick retail billing with barcode scanner support, immutable financial ledgers, operating expenses, daily cash drawer reconciliations, staff RBAC permissions, and comprehensive Profit & Loss analytics wrapped in a clean, simple, and minimalist user interface.
+It provides centralized management of products, fragrance taxonomy, boutique stock balances, suppliers, customer loyalty, purchase orders, quick retail billing with barcode scanner support, immutable financial ledgers, operating expenses, daily cash drawer reconciliations, staff RBAC permissions, and comprehensive Profit & Loss analytics wrapped in a clean, simple, and minimalist user interface.
 
 ---
 
@@ -58,7 +58,7 @@ It provides centralized management of products, fragrance taxonomy, multi-wareho
 - Opening stock initialization automatically logged as an opening stock transaction.
 
 ### 4. Boutique Stock & Inventory Ledger
-- Streamlined single-branch boutique inventory management.
+- Streamlined single-store boutique inventory management.
 - Real-time stock counts per perfume variant and batch number.
 - Clean tabbed interface: **Stock Levels** and **Audit Movement Ledger**.
 - Complete row actions on both tabs: **Edit** and **Delete** with automatic stock balance recalculation.
@@ -66,7 +66,7 @@ It provides centralized management of products, fragrance taxonomy, multi-wareho
 
 ### 5. Supplier Procurement & Goods Receiving
 - Complete purchase order workflow (PO creation -> approval -> partial or full goods receipt).
-- Inventory increases **only** for quantities physically received at the designated warehouse.
+- Inventory increases **only** for quantities physically received at the boutique store warehouse.
 - Automatic moving-average cost (MAC) recalculation upon goods receipt.
 - Supplier accounts payable tracking and payment history.
 
