@@ -88,6 +88,8 @@ router.get('/inventory/levels', authenticate, requirePermission('inventory:view'
 router.put('/inventory/levels/:id', authenticate, requirePermission('inventory:edit', 'inventory:create'), invCtrl.updateStockLevel);
 router.delete('/inventory/levels/:id', authenticate, requirePermission('inventory:delete', 'inventory:create'), invCtrl.deleteStockLevel);
 router.get('/inventory/movements', authenticate, requirePermission('inventory:view'), invCtrl.getMovements);
+router.put('/inventory/movements/:id', authenticate, requirePermission('inventory:edit', 'inventory:create'), invCtrl.updateMovement);
+router.delete('/inventory/movements/:id', authenticate, requirePermission('inventory:delete', 'inventory:create'), invCtrl.deleteMovement);
 router.post('/inventory/adjustments', authenticate, requirePermission('inventory:create'), invCtrl.createAdjustment);
 router.get('/inventory/transfers', authenticate, requirePermission('inventory:view'), invCtrl.getTransfers);
 router.post('/inventory/transfers', authenticate, requirePermission('inventory:create'), invCtrl.createTransfer);

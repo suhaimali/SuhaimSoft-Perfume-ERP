@@ -46,7 +46,7 @@ export const requirePermission = (...perms) => (req, _res, next) => {
 
 export const requireMasterAdmin = (req, _res, next) => {
   if (req.user?.isMasterAdmin) return next();
-  next(ApiError.forbidden('Master Admin access required'));
+  next(ApiError.forbidden('Administrator access required'));
 };
 
 /** Mongo filter restricting records to the branches a staff user may access. */

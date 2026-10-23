@@ -98,11 +98,6 @@ export default function Billing() {
 
   const searchInputRef = useRef(null);
 
-  useEffect(() => {
-    loadCatalog();
-    loadCustomers();
-  }, []);
-
   const loadCatalog = async () => {
     setCatalogLoading(true);
     try {
@@ -123,6 +118,11 @@ export default function Billing() {
       // ignore
     }
   };
+
+  useEffect(() => {
+    loadCatalog();
+    loadCustomers();
+  }, []);
 
   const handleAddItem = (variant) => {
     if (!variant) return;

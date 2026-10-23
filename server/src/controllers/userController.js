@@ -73,7 +73,7 @@ export const updateUser = asyncHandler(async (req, res) => {
   if (!user) throw ApiError.notFound('User not found');
 
   if (user.isMasterAdmin && req.user._id.toString() !== user._id.toString()) {
-    throw ApiError.forbidden('Master Admin can only be edited by themselves');
+    throw ApiError.forbidden('Administrator can only be edited by themselves');
   }
 
   if (name) user.name = name;
@@ -109,7 +109,7 @@ export const deleteUser = asyncHandler(async (req, res) => {
   const { id } = req.params;
   const user = await User.findById(id);
   if (!user) throw ApiError.notFound('User not found');
-  if (user.isMasterAdmin) throw ApiError.forbidden('Master Admin account cannot be deleted');
+  if (user.isMasterAdmin) throw ApiError.forbidden('Administrator account cannot be deleted');
   if (user._id.toString() === req.user._id.toString()) throw ApiError.badRequest('You cannot delete your own account');
 
   await User.findByIdAndDelete(id);

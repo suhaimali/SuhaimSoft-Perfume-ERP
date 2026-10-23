@@ -77,15 +77,15 @@ export default function Sidebar({ mobileOpen, setMobileOpen }) {
           mobileOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
-        {/* Brand Header — Modern Light */}
-        <div className="flex items-center justify-between px-5 py-4 border-b border-slate-200 bg-white">
-          <div className="flex items-center space-x-3">
-            <img src="/favicon.png" alt="SuhaimSoft" className="w-9 h-9 rounded-xl shadow-xs flex-shrink-0" />
+        {/* Brand Header — Clean & Simple */}
+        <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100">
+          <div className="flex items-center space-x-2.5">
+            <img src="/favicon.png" alt="SuhaimSoft" className="w-8 h-8 rounded-lg flex-shrink-0" />
             <div>
-              <h1 className="font-extrabold tracking-tight text-sm leading-tight text-slate-900 font-sans">
-                SUHAIMSOFT
+              <h1 className="font-bold text-sm tracking-tight text-slate-900 font-sans">
+                SuhaimSoft
               </h1>
-              <p className="text-[11px] font-bold tracking-wide text-blue-600">
+              <p className="text-[10px] font-medium text-slate-400">
                 Perfume ERP
               </p>
             </div>
@@ -94,21 +94,21 @@ export default function Sidebar({ mobileOpen, setMobileOpen }) {
             type="button"
             aria-label="Close navigation sidebar"
             onClick={() => setMobileOpen(false)}
-            className="lg:hidden p-1 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors cursor-pointer"
+            className="lg:hidden p-1 rounded-md text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors cursor-pointer"
           >
-            <X className="w-5 h-5" />
+            <X className="w-4 h-4" />
           </button>
         </div>
 
         {/* Navigation List */}
-        <nav className="flex-1 px-3 py-3 space-y-4 overflow-y-auto no-scrollbar">
+        <nav className="flex-1 px-3 py-3 space-y-3 overflow-y-auto no-scrollbar">
           {navSections.map((section) => {
             const filteredItems = section.items.filter((item) => !item.perm || can(item.perm));
             if (filteredItems.length === 0) return null;
 
             return (
               <div key={section.title} className="space-y-0.5">
-                <div className="px-3 py-1 text-[10px] font-bold tracking-widest uppercase font-mono text-slate-400">
+                <div className="px-3 pt-2 pb-1 text-[10px] font-semibold tracking-wider uppercase text-slate-400">
                   {section.title}
                 </div>
                 {filteredItems.map((item) => {
@@ -119,24 +119,21 @@ export default function Sidebar({ mobileOpen, setMobileOpen }) {
                       to={item.path}
                       onClick={() => setMobileOpen(false)}
                       className={({ isActive }) =>
-                        `group flex items-center justify-between px-3 py-2 rounded-xl text-xs font-medium transition-all duration-150 ${
+                        `flex items-center space-x-2.5 px-3 py-2 rounded-lg text-xs font-medium transition-colors ${
                           isActive
-                            ? 'bg-blue-50 text-blue-700 border border-blue-200 shadow-2xs font-semibold'
-                            : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100/70 border border-transparent'
+                            ? 'bg-slate-100 text-slate-900 font-semibold'
+                            : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
                         }`
                       }
                     >
                       {({ isActive }) => (
                         <>
-                          <div className="flex items-center space-x-2.5">
-                            <Icon
-                              className={`w-4 h-4 transition-transform group-hover:scale-105 ${
-                                isActive ? 'text-blue-600' : 'text-slate-400 group-hover:text-slate-600'
-                              }`}
-                            />
-                            <span>{item.label}</span>
-                          </div>
-                          {isActive && <ChevronRight className="w-3.5 h-3.5 text-blue-500" />}
+                          <Icon
+                            className={`w-4 h-4 flex-shrink-0 ${
+                              isActive ? 'text-slate-900' : 'text-slate-400'
+                            }`}
+                          />
+                          <span>{item.label}</span>
                         </>
                       )}
                     </NavLink>
@@ -148,17 +145,17 @@ export default function Sidebar({ mobileOpen, setMobileOpen }) {
         </nav>
 
         {/* User Profile & Logout */}
-        <div className="p-3 border-t border-slate-200 bg-white">
-          <div className="flex items-center justify-between p-2 rounded-xl bg-slate-50 border border-slate-200">
+        <div className="p-3 border-t border-slate-100">
+          <div className="flex items-center justify-between px-2 py-1.5 rounded-lg">
             <div className="flex items-center space-x-2.5 min-w-0">
-              <div className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 bg-blue-600 text-white shadow-2xs">
+              <div className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-semibold flex-shrink-0 bg-slate-200 text-slate-700">
                 {user?.name ? user.name.charAt(0).toUpperCase() : 'A'}
               </div>
               <div className="min-w-0">
-                <p className="text-xs font-bold truncate text-slate-900">{user?.name || 'Suhaim Ali VP'}</p>
-                <span className="inline-block px-1.5 rounded text-[9px] font-semibold bg-blue-100 text-blue-700 border border-blue-200">
-                  {user?.role?.name || 'Master Admin'}
-                </span>
+                <p className="text-xs font-semibold truncate text-slate-800">{user?.name || 'Suhaim Ali VP'}</p>
+                <p className="text-[10px] text-slate-400 truncate">
+                  {user?.role?.name || (user?.isMasterAdmin ? 'Administrator' : 'Staff')}
+                </p>
               </div>
             </div>
 
@@ -167,7 +164,7 @@ export default function Sidebar({ mobileOpen, setMobileOpen }) {
               aria-label="Sign out of account"
               onClick={logout}
               title="Sign Out"
-              className="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer"
+              className="p-1.5 rounded-md text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer"
             >
               <LogOut className="w-4 h-4" />
             </button>

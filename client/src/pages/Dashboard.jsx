@@ -90,7 +90,7 @@ export default function Dashboard() {
             Welcome back, <span>{user?.name || 'Suhaim Ali VP'}</span>
           </h1>
           <p className="text-xs sm:text-sm text-slate-500 mt-1 max-w-2xl">
-            SuhaimSoft Perfume ERP • Centralized inventory balances, high-speed POS billing, and real-time financial tracking.
+            SuhaimSoft Perfume ERP • Centralized inventory balances, fast retail billing, and real-time financial tracking.
           </p>
         </div>
 
@@ -361,7 +361,7 @@ export default function Dashboard() {
           <div className="flex items-center justify-between mb-3 pb-2 border-b border-slate-200">
             <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider font-mono flex items-center space-x-1.5">
               <Receipt className="w-3.5 h-3.5 text-blue-600" />
-              <span>Recent POS Receipts</span>
+              <span>Recent Sales Receipts</span>
             </h3>
             <button type="button" onClick={() => navigate('/sales')} className="text-[10px] font-semibold text-blue-600 hover:underline cursor-pointer">
               View All

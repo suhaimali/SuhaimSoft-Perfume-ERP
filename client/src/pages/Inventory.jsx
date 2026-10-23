@@ -49,6 +49,19 @@ export default function Inventory() {
   const [deleteItem, setDeleteItem] = useState(null);
   const [deleteLoading, setDeleteLoading] = useState(false);
 
+  // Edit Movement State
+  const [editMovementItem, setEditMovementItem] = useState(null);
+  const [editMovementForm, setEditMovementForm] = useState({
+    reason: '',
+    batchNo: '',
+    type: 'adjustment_in',
+  });
+  const [editMovementSaving, setEditMovementSaving] = useState(false);
+
+  // Delete Movement State
+  const [deleteMovementItem, setDeleteMovementItem] = useState(null);
+  const [deleteMovementLoading, setDeleteMovementLoading] = useState(false);
+
   // Adjustment state
   const [adjData, setAdjData] = useState({
     variantId: '',
@@ -175,251 +188,261 @@ export default function Inventory() {
     setSelectedStatus('');
   };
 
+  const openEditMovementModal = (m) => {
+    setEditMovementItem(m);
+    setEditMovementForm({
+      reason: m.reason || '',
+      batchNo: m.batchNo || '',
+      type: m.type || 'adjustment_in',
+    });
+  };
+
+  const handleEditMovementSubmit = async (e) => {
+    e.preventDefault();
+    if (!editMovementItem) return;
+    setEditMovementSaving(true);
+    try {
+      await api.put(`/inventory/movements/${editMovementItem._id}`, editMovementForm);
+      toast.success('Movement record updated successfully');
+      setEditMovementItem(null);
+      loadInventory();
+    } catch (err) {
+      toast.error(err.response?.data?.error?.message || 'Failed to update movement');
+    } finally {
+      setEditMovementSaving(false);
+    }
+  };
+
+  const handleDeleteMovementConfirm = async () => {
+    if (!deleteMovementItem) return;
+    setDeleteMovementLoading(true);
+    try {
+      await api.delete(`/inventory/movements/${deleteMovementItem._id}`);
+      toast.success('Movement record deleted successfully');
+      setDeleteMovementItem(null);
+      loadInventory();
+    } catch (err) {
+      toast.error(err.response?.data?.error?.message || 'Failed to delete movement');
+    } finally {
+      setDeleteMovementLoading(false);
+    }
+  };
+
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-3 border-b border-[#E2E8F0]">
+    <div className="space-y-5">
+      {/* Header — Clean & Simple */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-200">
         <div>
-          <h1 className="text-xl md:text-2xl font-bold text-[#0F172A] flex items-center space-x-2">
-            <span>Inventory & Stock Balances</span>
+          <h1 className="text-xl font-bold text-slate-900">
+            Inventory & Stock
           </h1>
-          <p className="text-xs text-[#64748B] mt-1">
-            Real-time multi-warehouse stock levels, physical adjustments, and immutable movement ledger.
+          <p className="text-xs text-slate-500 mt-0.5">
+            View stock balances and record inventory adjustments.
           </p>
         </div>
 
-        <div className="flex items-center space-x-2">
-          <button
-            type="button"
-            onClick={() => setShowAdjustModal(true)}
-            className="flex items-center space-x-1.5 px-3.5 py-2.5 rounded-xl text-xs font-semibold bg-white border border-[#CBD5E1] text-[#334155] hover:bg-[#F8FAFC] shadow-xs cursor-pointer"
-          >
-            <AlertTriangle className="w-4 h-4 text-slate-700" />
-            <span>Stock Adjustment</span>
-          </button>
-        </div>
+        <button
+          type="button"
+          onClick={() => setShowAdjustModal(true)}
+          className="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-blue-600 hover:bg-blue-700 text-white transition-colors cursor-pointer self-start sm:self-auto"
+        >
+          <Plus className="w-3.5 h-3.5" />
+          <span>Stock Adjustment</span>
+        </button>
       </div>
 
-      {/* Responsive Tabs */}
-      <div className="flex flex-wrap gap-2 border-b border-[#E2E8F0] pb-2 text-xs">
+      {/* Clean Tabs */}
+      <div className="flex items-center space-x-1 border-b border-slate-200 text-xs">
         <button
           type="button"
           onClick={() => setActiveTab('levels')}
-          className={`px-3.5 py-2 rounded-xl font-semibold transition-colors flex items-center space-x-1.5 cursor-pointer ${
+          className={`px-3 py-2 font-medium transition-colors border-b-2 cursor-pointer flex items-center space-x-1.5 ${
             activeTab === 'levels'
-              ? 'bg-blue-50 text-blue-700 border border-blue-200 shadow-xs'
-              : 'text-[#64748B] hover:text-[#0F172A] hover:bg-[#F1F5F9]'
+              ? 'border-blue-600 text-blue-600 font-semibold'
+              : 'border-transparent text-slate-500 hover:text-slate-800'
           }`}
         >
-          <Boxes className="w-4 h-4" />
+          <Boxes className="w-3.5 h-3.5" />
           <span>Stock Levels ({stockLevels.length})</span>
         </button>
 
         <button
           type="button"
           onClick={() => setActiveTab('ledger')}
-          className={`px-3.5 py-2 rounded-xl font-semibold transition-colors flex items-center space-x-1.5 cursor-pointer ${
+          className={`px-3 py-2 font-medium transition-colors border-b-2 cursor-pointer flex items-center space-x-1.5 ${
             activeTab === 'ledger'
-              ? 'bg-blue-50 text-blue-700 border border-blue-200 shadow-xs'
-              : 'text-[#64748B] hover:text-[#0F172A] hover:bg-[#F1F5F9]'
+              ? 'border-blue-600 text-blue-600 font-semibold'
+              : 'border-transparent text-slate-500 hover:text-slate-800'
           }`}
         >
-          <History className="w-4 h-4" />
-          <span>Audit Movement Ledger ({movements.length})</span>
+          <History className="w-3.5 h-3.5" />
+          <span>Movement Ledger ({movements.length})</span>
         </button>
       </div>
 
-      {/* Levels Tab Controls: Search, Filters, Row Limit */}
+      {/* Filter Bar */}
       {activeTab === 'levels' && (
-        <div className="p-4 rounded-2xl bg-white border border-[#E2E8F0] shadow-xs space-y-3">
-          <div className="flex flex-col sm:flex-row items-center gap-3">
-            {/* Search Input */}
-            <div className="relative flex-1 w-full">
-              <label htmlFor="inventory-search-input" className="sr-only">Search stock balances</label>
-              <Search className="absolute left-3.5 top-3 w-4 h-4 text-[#94A3B8]" />
-              <input
-                id="inventory-search-input"
-                name="search"
-                type="text"
-                autoComplete="off"
-                aria-label="Search by perfume name, SKU code, or batch"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                placeholder="Search by perfume name, SKU code, or batch..."
-                className="w-full pl-9 pr-4 py-2 bg-white border border-[#CBD5E1] rounded-xl text-xs text-[#0F172A] placeholder-[#94A3B8] focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
-              />
-            </div>
-
-            {/* Stock Status Filter */}
-            <div className="w-full sm:w-44">
-              <label htmlFor="inventory-status-filter" className="sr-only">Filter by stock status</label>
-              <select
-                id="inventory-status-filter"
-                name="status"
-                aria-label="Filter by stock status"
-                value={selectedStatus}
-                onChange={(e) => setSelectedStatus(e.target.value)}
-                className="w-full px-3 py-2 bg-white border border-[#CBD5E1] rounded-xl text-xs text-[#0F172A] focus:outline-none focus:border-blue-600"
-              >
-                <option value="">All Stock Status</option>
-                <option value="optimal">In Stock (Optimal)</option>
-                <option value="low">Low Stock (≤ min)</option>
-                <option value="out">Out of Stock (0)</option>
-              </select>
-            </div>
-
-            {/* Row Limit Selector */}
-            <div className="flex items-center space-x-2 w-full sm:w-auto">
-              <label htmlFor="inventory-rows-per-page" className="text-xs text-[#64748B] whitespace-nowrap">Rows:</label>
-              <select
-                id="inventory-rows-per-page"
-                name="rowsPerPage"
-                aria-label="Rows per page"
-                value={rowsPerPage}
-                onChange={(e) => setRowsPerPage(Number(e.target.value))}
-                className="px-2.5 py-2 bg-white border border-[#CBD5E1] rounded-xl text-xs text-[#0F172A] focus:outline-none focus:border-blue-600"
-              >
-                <option value={5}>5</option>
-                <option value={10}>10</option>
-                <option value={25}>25</option>
-                <option value={50}>50</option>
-                <option value={100}>100</option>
-              </select>
-            </div>
+        <div className="flex flex-col sm:flex-row items-center gap-2.5 text-xs">
+          {/* Search */}
+          <div className="relative flex-1 w-full">
+            <label htmlFor="inventory-search-input" className="sr-only">Search stock</label>
+            <Search className="absolute left-3 top-2.5 w-3.5 h-3.5 text-slate-400" />
+            <input
+              id="inventory-search-input"
+              name="search"
+              type="text"
+              autoComplete="off"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Search by perfume, SKU, or batch..."
+              className="w-full pl-8 pr-3 py-1.5 bg-white border border-slate-200 rounded-lg text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-600"
+            />
           </div>
 
-          {/* Active filter tags */}
+          {/* Status Filter */}
+          <div className="w-full sm:w-40">
+            <select
+              id="inventory-status-filter"
+              name="status"
+              value={selectedStatus}
+              onChange={(e) => setSelectedStatus(e.target.value)}
+              className="w-full px-2.5 py-1.5 bg-white border border-slate-200 rounded-lg text-xs text-slate-700 focus:outline-none focus:border-blue-600"
+            >
+              <option value="">All Status</option>
+              <option value="optimal">In Stock (Optimal)</option>
+              <option value="low">Low Stock (≤ min)</option>
+              <option value="out">Out of Stock (0)</option>
+            </select>
+          </div>
+
+          {/* Rows Selector */}
+          <div className="flex items-center space-x-1.5 w-full sm:w-auto text-slate-500 whitespace-nowrap">
+            <span>Rows:</span>
+            <select
+              id="inventory-rows-per-page"
+              name="rowsPerPage"
+              value={rowsPerPage}
+              onChange={(e) => setRowsPerPage(Number(e.target.value))}
+              className="px-2 py-1.5 bg-white border border-slate-200 rounded-lg text-xs text-slate-700 focus:outline-none focus:border-blue-600"
+            >
+              <option value={10}>10</option>
+              <option value={25}>25</option>
+              <option value={50}>50</option>
+              <option value={100}>100</option>
+            </select>
+          </div>
+
           {(search || selectedStatus) && (
-            <div className="flex items-center justify-between pt-1 border-t border-[#F1F5F9] text-xs">
-              <span className="text-[#64748B]">
-                Found <strong>{filteredLevels.length}</strong> matching stock records
-              </span>
-              <button
-                type="button"
-                onClick={clearFilters}
-                className="text-[11px] text-blue-600 font-semibold hover:underline cursor-pointer"
-              >
-                Clear all filters
-              </button>
-            </div>
+            <button
+              type="button"
+              onClick={clearFilters}
+              className="text-xs text-blue-600 hover:underline whitespace-nowrap cursor-pointer self-start sm:self-auto py-1"
+            >
+              Clear filters
+            </button>
           )}
         </div>
       )}
 
-      {/* Tables */}
+      {/* Main Content */}
       {loading ? (
-        <div className="py-16 text-center text-xs text-[#94A3B8]">
-          <div className="w-6 h-6 border-2 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-2" />
+        <div className="py-12 text-center text-xs text-slate-400">
+          <div className="w-5 h-5 border-2 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-2" />
           Loading inventory records...
         </div>
       ) : activeTab === 'levels' ? (
         filteredLevels.length === 0 ? (
-          /* Empty State / Not Found Card */
-          <div className="text-center py-16 bg-white border border-[#E2E8F0] rounded-2xl p-8 shadow-xs">
-            <div className="w-12 h-12 rounded-full bg-blue-50 text-blue-700 border border-blue-200 flex items-center justify-center mx-auto mb-3">
-              <Boxes className="w-6 h-6" />
-            </div>
-            <h3 className="text-sm font-bold text-[#0F172A]">No Stock Balances Found</h3>
-            <p className="text-xs text-[#64748B] mt-1 max-w-sm mx-auto">
-              No inventory records matched your search query or selected filters. Try adjusting your filters or recording a new stock adjustment.
+          <div className="text-center py-12 bg-white border border-slate-200 rounded-xl p-6">
+            <Boxes className="w-8 h-8 text-slate-300 mx-auto mb-2" />
+            <h3 className="text-sm font-semibold text-slate-800">No stock balances found</h3>
+            <p className="text-xs text-slate-400 mt-1 max-w-sm mx-auto">
+              No inventory records matched your filters.
             </p>
-            <div className="mt-4 flex items-center justify-center space-x-2">
-              {(search || selectedStatus) && (
-                <button
-                  type="button"
-                  onClick={clearFilters}
-                  className="px-4 py-2 rounded-xl text-xs font-semibold bg-white border border-[#CBD5E1] text-[#334155] hover:bg-[#F8FAFC] shadow-xs cursor-pointer"
-                >
-                  Clear Filters
-                </button>
-              )}
+            {(search || selectedStatus) && (
               <button
                 type="button"
-                onClick={() => setShowAdjustModal(true)}
-                className="px-4 py-2 rounded-xl text-xs font-semibold bg-blue-600 hover:bg-blue-700 text-white shadow-xs inline-flex items-center space-x-1.5 cursor-pointer"
+                onClick={clearFilters}
+                className="mt-3 px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors cursor-pointer"
               >
-                <Plus className="w-4 h-4" />
-                <span>Record Stock Adjustment</span>
+                Clear Filters
               </button>
-            </div>
+            )}
           </div>
         ) : (
-          <div className="space-y-4">
-            <div className="bg-white border border-[#E2E8F0] rounded-2xl overflow-hidden shadow-xs">
+          <div className="space-y-3">
+            <div className="bg-white border border-slate-200 rounded-xl overflow-hidden">
               <div className="overflow-x-auto">
                 <table aria-label="Inventory Stock Balances Table" className="w-full text-left text-xs">
                   <caption className="sr-only">Inventory Stock Balances Register</caption>
-                  <thead className="bg-[#F8FAFC] text-[#475569] uppercase tracking-wider text-[10px] border-b border-[#E2E8F0]">
+                  <thead className="bg-slate-50 text-slate-500 uppercase tracking-wider text-[10px] border-b border-slate-200 font-semibold">
                     <tr>
-                      <th scope="col" className="px-5 py-3.5">Perfume & SKU</th>
-                      <th scope="col" className="px-4 py-3.5">Batch / Expiry</th>
-                      <th scope="col" className="px-4 py-3.5 text-right">Available Qty</th>
-                      <th scope="col" className="px-4 py-3.5 text-right">Unit Value</th>
-                      <th scope="col" className="px-4 py-3.5 text-center">Status</th>
-                      <th scope="col" className="px-4 py-3.5 text-right">Actions</th>
+                      <th scope="col" className="px-4 py-3">Perfume & SKU</th>
+                      <th scope="col" className="px-4 py-3">Batch / Expiry</th>
+                      <th scope="col" className="px-4 py-3 text-right">Qty</th>
+                      <th scope="col" className="px-4 py-3 text-right">Price</th>
+                      <th scope="col" className="px-4 py-3 text-center">Status</th>
+                      <th scope="col" className="px-4 py-3 text-center">Actions</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-[#F1F5F9]">
+                  <tbody className="divide-y divide-slate-100">
                     {paginatedLevels.map((lvl) => (
-                      <tr key={lvl._id} className="hover:bg-[#F8FAFC] transition-colors">
-                        <td className="px-5 py-4">
-                          <p className="font-bold text-[#0F172A]">{lvl.variant?.product?.name}</p>
-                          <p className="text-[11px] text-blue-600 font-semibold">{lvl.variant?.sku} &bull; {lvl.variant?.sizeMl}ml {lvl.variant?.concentration}</p>
+                      <tr key={lvl._id} className="hover:bg-slate-50 transition-colors">
+                        <td className="px-4 py-3">
+                          <p className="font-semibold text-slate-900">{lvl.variant?.product?.name}</p>
+                          <p className="text-[10px] text-slate-400 font-mono">{lvl.variant?.sku} &bull; {lvl.variant?.sizeMl}ml {lvl.variant?.concentration}</p>
                         </td>
 
-                        <td className="px-4 py-4 text-[#64748B]">
-                          <p className="font-medium text-[#334155]">{lvl.batchNo || 'Default Batch'}</p>
+                        <td className="px-4 py-3 text-slate-600">
+                          <p className="font-medium text-slate-700">{lvl.batchNo || 'Default'}</p>
                           {lvl.expiryDate && (
-                            <p className="text-[10px] text-[#94A3B8]">Exp: {new Date(lvl.expiryDate).toLocaleDateString()}</p>
+                            <p className="text-[10px] text-slate-400">Exp: {new Date(lvl.expiryDate).toLocaleDateString()}</p>
                           )}
                         </td>
 
-                        <td className="px-4 py-4 text-right">
-                          <span className="font-bold text-base text-[#0F172A]">{lvl.quantity}</span>
+                        <td className="px-4 py-3 text-right">
+                          <span className="font-bold text-slate-900">{lvl.quantity}</span>
                         </td>
 
-                        <td className="px-4 py-4 text-right">
-                          <p className="font-semibold text-emerald-700">₹{lvl.variant?.retailPrice?.toLocaleString('en-IN')}</p>
-                          <p className="text-[10px] text-[#94A3B8]">Cost: ₹{lvl.variant?.purchaseCost?.toLocaleString('en-IN')}</p>
+                        <td className="px-4 py-3 text-right">
+                          <p className="font-medium text-slate-900">₹{lvl.variant?.retailPrice?.toLocaleString('en-IN')}</p>
+                          <p className="text-[10px] text-slate-400">Cost: ₹{lvl.variant?.purchaseCost?.toLocaleString('en-IN')}</p>
                         </td>
 
-                        <td className="px-4 py-4 text-center">
+                        <td className="px-4 py-3 text-center">
                           {lvl.quantity <= 0 ? (
-                            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-rose-50 text-rose-700 border border-rose-200">
+                            <span className="px-2 py-0.5 rounded text-[10px] font-medium uppercase bg-rose-50 text-rose-700">
                               Out of Stock
                             </span>
                           ) : lvl.quantity <= (lvl.variant?.minStock || 5) ? (
-                            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 text-slate-700 border border-slate-300">
+                            <span className="px-2 py-0.5 rounded text-[10px] font-medium uppercase bg-amber-50 text-amber-700">
                               Low Stock
                             </span>
                           ) : (
-                            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
-                              Optimal
+                            <span className="px-2 py-0.5 rounded text-[10px] font-medium uppercase bg-emerald-50 text-emerald-700">
+                              In Stock
                             </span>
                           )}
                         </td>
 
-                        <td className="px-4 py-4 text-right">
-                          <div className="flex items-center justify-end space-x-2">
+                        <td className="px-4 py-3 text-center">
+                          <div className="flex items-center justify-center space-x-1">
                             <button
                               type="button"
                               aria-label={`Edit stock for ${lvl.variant?.product?.name || 'item'}`}
                               onClick={() => openEditModal(lvl)}
-                              title="Edit Stock Level"
-                              className="inline-flex items-center space-x-1.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-blue-50 hover:bg-blue-100 text-blue-600 hover:text-blue-700 border border-blue-200 transition-colors shadow-xs cursor-pointer"
+                              title="Edit Stock"
+                              className="p-1 text-slate-400 hover:text-blue-600 hover:bg-slate-100 rounded transition-colors cursor-pointer"
                             >
                               <Edit2 className="w-3.5 h-3.5" />
-                              <span>Edit</span>
                             </button>
                             <button
                               type="button"
                               aria-label={`Delete stock for ${lvl.variant?.product?.name || 'item'}`}
                               onClick={() => setDeleteItem(lvl)}
-                              title="Delete Stock Record"
-                              className="inline-flex items-center space-x-1.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-rose-50 hover:bg-rose-100 text-rose-600 hover:text-rose-700 border border-rose-200 transition-colors shadow-xs cursor-pointer"
+                              title="Delete Record"
+                              className="p-1 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded transition-colors cursor-pointer"
                             >
                               <Trash2 className="w-3.5 h-3.5" />
-                              <span>Delete</span>
                             </button>
                           </div>
                         </td>
@@ -431,22 +454,22 @@ export default function Inventory() {
             </div>
 
             {/* Pagination Controls */}
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-3 px-2 text-xs text-[#64748B]">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-3 px-1 text-xs text-slate-500">
               <p>
-                Showing <strong>{(currentPage - 1) * rowsPerPage + 1}</strong> to{' '}
+                Showing <strong>{(currentPage - 1) * rowsPerPage + 1}</strong>–
                 <strong>{Math.min(currentPage * rowsPerPage, filteredLevels.length)}</strong> of{' '}
                 <strong>{filteredLevels.length}</strong> items
               </p>
 
-              <div className="flex items-center space-x-1.5">
+              <div className="flex items-center space-x-1">
                 <button
                   type="button"
                   aria-label="Previous page"
                   disabled={currentPage <= 1}
                   onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-                  className="p-1.5 rounded-lg border border-[#CBD5E1] bg-white text-[#334155] hover:bg-[#F8FAFC] disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+                  className="px-2 py-1 rounded-md border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
                 >
-                  <ChevronLeft className="w-4 h-4" />
+                  <ChevronLeft className="w-3.5 h-3.5" />
                 </button>
 
                 {Array.from({ length: totalPages }, (_, i) => i + 1)
@@ -455,15 +478,15 @@ export default function Inventory() {
                     const prev = arr[idx - 1];
                     return (
                       <React.Fragment key={p}>
-                        {prev && p - prev > 1 && <span className="px-1 text-[#94A3B8]">...</span>}
+                        {prev && p - prev > 1 && <span className="px-1 text-slate-400">...</span>}
                         <button
                           type="button"
                           aria-label={`Go to page ${p}`}
                           onClick={() => setCurrentPage(p)}
-                          className={`px-3 py-1 rounded-lg font-semibold cursor-pointer ${
+                          className={`px-2.5 py-1 rounded-md text-xs font-medium cursor-pointer ${
                             currentPage === p
-                              ? 'bg-blue-600 text-white shadow-xs'
-                              : 'bg-white border border-[#CBD5E1] text-[#334155] hover:bg-[#F8FAFC]'
+                              ? 'bg-blue-600 text-white'
+                              : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-50'
                           }`}
                         >
                           {p}
@@ -477,61 +500,85 @@ export default function Inventory() {
                   aria-label="Next page"
                   disabled={currentPage >= totalPages}
                   onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
-                  className="p-1.5 rounded-lg border border-[#CBD5E1] bg-white text-[#334155] hover:bg-[#F8FAFC] disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+                  className="px-2 py-1 rounded-md border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
                 >
-                  <ChevronRight className="w-4 h-4" />
+                  <ChevronRight className="w-3.5 h-3.5" />
                 </button>
               </div>
             </div>
           </div>
         )
       ) : (
-        <div className="bg-white border border-[#E2E8F0] rounded-2xl overflow-hidden shadow-xs">
+        <div className="bg-white border border-slate-200 rounded-xl overflow-hidden">
           <div className="overflow-x-auto">
             <table aria-label="Audit Movement Ledger Table" className="w-full text-left text-xs">
               <caption className="sr-only">Audit Movement Ledger Register</caption>
-              <thead className="bg-[#F8FAFC] text-[#475569] uppercase tracking-wider text-[10px] border-b border-[#E2E8F0]">
+              <thead className="bg-slate-50 text-slate-500 uppercase tracking-wider text-[10px] border-b border-slate-200 font-semibold">
                 <tr>
-                  <th scope="col" className="px-5 py-3.5">Timestamp</th>
-                  <th scope="col" className="px-4 py-3.5">Fragrance Item</th>
-                  <th scope="col" className="px-4 py-3.5">Movement Type</th>
-                  <th scope="col" className="px-4 py-3.5 text-right">Change</th>
-                  <th scope="col" className="px-4 py-3.5 text-right">Balance After</th>
-                  <th scope="col" className="px-4 py-3.5">Reference / Reason</th>
+                  <th scope="col" className="px-4 py-3">Timestamp</th>
+                  <th scope="col" className="px-4 py-3">Item</th>
+                  <th scope="col" className="px-4 py-3">Type</th>
+                  <th scope="col" className="px-4 py-3 text-right">Change</th>
+                  <th scope="col" className="px-4 py-3 text-right">Balance</th>
+                  <th scope="col" className="px-4 py-3">Reason</th>
+                  <th scope="col" className="px-4 py-3 text-center">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#F1F5F9]">
+              <tbody className="divide-y divide-slate-100">
                 {movements.map((m) => (
-                  <tr key={m._id} className="hover:bg-[#F8FAFC] transition-colors">
-                    <td className="px-5 py-3 text-[#64748B]">
-                      <p className="font-medium text-[#0F172A]">{new Date(m.createdAt).toLocaleDateString()}</p>
-                      <p className="text-[10px] text-[#94A3B8]">{new Date(m.createdAt).toLocaleTimeString()}</p>
+                  <tr key={m._id} className="hover:bg-slate-50 transition-colors">
+                    <td className="px-4 py-3 text-slate-600">
+                      <p className="font-medium text-slate-800">{new Date(m.createdAt).toLocaleDateString()}</p>
+                      <p className="text-[10px] text-slate-400">{new Date(m.createdAt).toLocaleTimeString()}</p>
                     </td>
 
                     <td className="px-4 py-3">
-                      <p className="font-semibold text-[#0F172A]">{m.product?.name}</p>
-                      <p className="text-[10px] text-[#64748B]">{m.variant?.sku}</p>
+                      <p className="font-medium text-slate-900">{m.product?.name}</p>
+                      <p className="text-[10px] text-slate-400 font-mono">{m.variant?.sku}</p>
                     </td>
 
                     <td className="px-4 py-3">
-                      <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#F1F5F9] text-[#334155] border border-[#E2E8F0] uppercase">
+                      <span className="px-2 py-0.5 rounded text-[10px] font-medium bg-slate-100 text-slate-700 uppercase">
                         {m.type?.replace('_', ' ')}
                       </span>
                     </td>
 
                     <td className="px-4 py-3 text-right">
-                      <span className={`font-bold text-sm ${m.quantity > 0 ? 'text-emerald-700' : 'text-rose-700'}`}>
+                      <span className={`font-semibold ${m.quantity > 0 ? 'text-emerald-600' : 'text-rose-600'}`}>
                         {m.quantity > 0 ? `+${m.quantity}` : m.quantity}
                       </span>
                     </td>
 
-                    <td className="px-4 py-3 text-right font-bold text-[#0F172A]">
+                    <td className="px-4 py-3 text-right font-bold text-slate-900">
                       {m.balanceAfter}
                     </td>
 
-                    <td className="px-4 py-3 text-[#64748B]">
+                    <td className="px-4 py-3 text-slate-500">
                       <p>{m.reason}</p>
-                      {m.refNumber && <p className="text-[10px] text-slate-500 font-semibold">{m.refNumber}</p>}
+                      {m.refNumber && <p className="text-[10px] text-slate-400 font-mono">{m.refNumber}</p>}
+                    </td>
+
+                    <td className="px-4 py-3 text-center">
+                      <div className="flex items-center justify-center space-x-1">
+                        <button
+                          type="button"
+                          aria-label={`Edit movement for ${m.product?.name || 'item'}`}
+                          onClick={() => openEditMovementModal(m)}
+                          title="Edit Movement"
+                          className="p-1 text-slate-400 hover:text-blue-600 hover:bg-slate-100 rounded transition-colors cursor-pointer"
+                        >
+                          <Edit2 className="w-3.5 h-3.5" />
+                        </button>
+                        <button
+                          type="button"
+                          aria-label={`Delete movement for ${m.product?.name || 'item'}`}
+                          onClick={() => setDeleteMovementItem(m)}
+                          title="Delete Movement"
+                          className="p-1 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded transition-colors cursor-pointer"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}
@@ -786,6 +833,155 @@ export default function Inventory() {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Edit Movement Modal */}
+      {editMovementItem && (
+        <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white border border-slate-200 rounded-xl max-w-md w-full p-6 shadow-xl">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-200">
+              <div>
+                <h3 className="text-base font-bold text-slate-900">Edit Movement Record</h3>
+                <p className="text-xs text-slate-500">
+                  {editMovementItem.product?.name} ({editMovementItem.variant?.sku})
+                </p>
+              </div>
+              <button
+                type="button"
+                aria-label="Close edit movement modal"
+                onClick={() => setEditMovementItem(null)}
+                className="text-slate-400 hover:text-slate-700 cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <form onSubmit={handleEditMovementSubmit} className="space-y-4 mt-4 text-xs">
+              <div>
+                <label htmlFor="edit-mov-type" className="block font-medium text-slate-700 mb-1">Movement Type</label>
+                <select
+                  id="edit-mov-type"
+                  name="type"
+                  value={editMovementForm.type}
+                  onChange={(e) => setEditMovementForm({ ...editMovementForm, type: e.target.value })}
+                  className="w-full px-3 py-2 bg-white border border-slate-300 rounded-lg text-slate-900 focus:outline-none focus:border-blue-600"
+                >
+                  <option value="adjustment_in">Correction (Stock In +)</option>
+                  <option value="adjustment_out">Correction (Stock Out -)</option>
+                  <option value="damaged">Damaged Bottle</option>
+                  <option value="leaked">Leaked Fragrance</option>
+                  <option value="lost">Lost / Missing</option>
+                  <option value="expired">Expired Tester/Stock</option>
+                  <option value="opening">Opening Stock</option>
+                  <option value="purchase_receipt">Purchase Receipt</option>
+                  <option value="sale">Sale</option>
+                  <option value="sale_return">Sale Return</option>
+                </select>
+              </div>
+
+              <div>
+                <label htmlFor="edit-mov-batch" className="block font-medium text-slate-700 mb-1">Batch / Reference</label>
+                <input
+                  id="edit-mov-batch"
+                  name="batchNo"
+                  type="text"
+                  autoComplete="off"
+                  value={editMovementForm.batchNo}
+                  onChange={(e) => setEditMovementForm({ ...editMovementForm, batchNo: e.target.value })}
+                  placeholder="e.g. BATCH-2026-A"
+                  className="w-full px-3 py-2 bg-white border border-slate-300 rounded-lg text-slate-900 focus:outline-none focus:border-blue-600"
+                />
+              </div>
+
+              <div>
+                <label htmlFor="edit-mov-reason" className="block font-medium text-slate-700 mb-1">Reason / Notes *</label>
+                <textarea
+                  id="edit-mov-reason"
+                  name="reason"
+                  rows="3"
+                  required
+                  value={editMovementForm.reason}
+                  onChange={(e) => setEditMovementForm({ ...editMovementForm, reason: e.target.value })}
+                  placeholder="Audit reason or notes..."
+                  className="w-full px-3 py-2 bg-white border border-slate-300 rounded-lg text-slate-900 focus:outline-none focus:border-blue-600"
+                />
+              </div>
+
+              <div className="flex justify-end space-x-2 pt-2 border-t border-slate-200">
+                <button
+                  type="button"
+                  onClick={() => setEditMovementItem(null)}
+                  className="px-4 py-2 rounded-lg bg-white border border-slate-300 text-slate-700 hover:bg-slate-50 cursor-pointer"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={editMovementSaving}
+                  className="px-4 py-2 rounded-lg font-medium bg-blue-600 hover:bg-blue-700 text-white cursor-pointer disabled:opacity-50"
+                >
+                  {editMovementSaving ? 'Saving...' : 'Save Movement'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Movement Confirmation Modal */}
+      {deleteMovementItem && (
+        <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white border border-slate-200 rounded-xl max-w-md w-full p-6 shadow-xl">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-200">
+              <h3 className="text-base font-bold text-rose-600 flex items-center space-x-2">
+                <AlertTriangle className="w-5 h-5 text-rose-600" />
+                <span>Delete Movement Record</span>
+              </h3>
+              <button
+                type="button"
+                aria-label="Close delete movement modal"
+                onClick={() => setDeleteMovementItem(null)}
+                className="text-slate-400 hover:text-slate-700 cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="py-4 space-y-2 text-xs text-slate-700">
+              <p>
+                Are you sure you want to delete this movement record for{' '}
+                <strong>{deleteMovementItem.product?.name}</strong> ({deleteMovementItem.variant?.sku})?
+              </p>
+              <div className="p-3 rounded-lg bg-slate-50 border border-slate-200 space-y-1">
+                <p>Movement Type: <strong className="uppercase">{deleteMovementItem.type?.replace('_', ' ')}</strong></p>
+                <p>Quantity Change: <strong>{deleteMovementItem.quantity > 0 ? `+${deleteMovementItem.quantity}` : deleteMovementItem.quantity} units</strong></p>
+                <p>Reason: <strong>{deleteMovementItem.reason || 'None'}</strong></p>
+                <p className="text-[10px] text-slate-400">Date: {new Date(deleteMovementItem.createdAt).toLocaleString()}</p>
+              </div>
+              <p className="text-[11px] text-slate-500">
+                Deleting this ledger entry will adjust the corresponding stock balance to keep inventory in sync.
+              </p>
+            </div>
+
+            <div className="flex justify-end space-x-2 pt-2 border-t border-slate-200">
+              <button
+                type="button"
+                onClick={() => setDeleteMovementItem(null)}
+                className="px-4 py-2 rounded-lg bg-white border border-slate-300 text-slate-700 hover:bg-slate-50 cursor-pointer"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={handleDeleteMovementConfirm}
+                disabled={deleteMovementLoading}
+                className="px-4 py-2 rounded-lg font-medium bg-rose-600 hover:bg-rose-700 text-white cursor-pointer disabled:opacity-50"
+              >
+                {deleteMovementLoading ? 'Deleting...' : 'Confirm Delete'}
+              </button>
+            </div>
           </div>
         </div>
       )}

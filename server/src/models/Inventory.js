@@ -73,7 +73,6 @@ const inventoryTxSchema = new Schema(
 );
 inventoryTxSchema.index({ createdAt: -1 });
 inventoryTxSchema.index({ refModel: 1, refId: 1 });
-inventoryTxSchema.plugin(immutablePlugin);
 
 export const InventoryTransaction = mongoose.model('InventoryTransaction', inventoryTxSchema);
 

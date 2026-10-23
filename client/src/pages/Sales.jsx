@@ -348,7 +348,7 @@ export default function Sales() {
                       <p className="text-xs text-[#64748B]">
                         {activeFiltersCount > 0
                           ? 'No sales match your active filter criteria.'
-                          : 'No sales have been processed yet. Start by billing orders in the POS terminal.'}
+                          : 'No sales have been processed yet. Start by billing orders in Quick Billing.'}
                       </p>
                       {activeFiltersCount > 0 && (
                         <button

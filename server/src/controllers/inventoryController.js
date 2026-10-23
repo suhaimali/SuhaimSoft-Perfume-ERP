@@ -263,3 +263,57 @@ export const deleteStockLevel = asyncHandler(async (req, res) => {
   res.json({ success: true, message: 'Stock level record deleted successfully' });
 });
 
+export const updateMovement = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const { reason, batchNo, expiryDate, type } = req.body;
+  const tx = await InventoryTransaction.findById(id);
+  if (!tx) throw ApiError.notFound('Movement record not found');
+
+  if (reason !== undefined) tx.reason = reason;
+  if (batchNo !== undefined) tx.batchNo = batchNo;
+  if (expiryDate !== undefined) tx.expiryDate = expiryDate ? new Date(expiryDate) : null;
+  if (type !== undefined) tx.type = type;
+
+  await tx.save();
+
+  await logAudit({
+    user: req.user,
+    action: 'movement_update',
+    module: 'inventory',
+    entityId: tx._id,
+    description: `Updated inventory transaction ${tx._id}`,
+    req,
+  });
+
+  const updated = await InventoryTransaction.findById(id).populate('warehouse product variant user');
+  res.json({ success: true, message: 'Movement record updated successfully', data: { movement: updated } });
+});
+
+export const deleteMovement = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const tx = await InventoryTransaction.findById(id);
+  if (!tx) throw ApiError.notFound('Movement record not found');
+
+  // Reverse stock impact if variant & warehouse exist
+  if (tx.quantity && tx.variant && tx.warehouse) {
+    const stockLevel = await StockLevel.findOne({ variant: tx.variant, warehouse: tx.warehouse });
+    if (stockLevel) {
+      stockLevel.quantity = Math.max(0, stockLevel.quantity - tx.quantity);
+      await stockLevel.save();
+    }
+  }
+
+  await InventoryTransaction.findByIdAndDelete(id);
+
+  await logAudit({
+    user: req.user,
+    action: 'movement_delete',
+    module: 'inventory',
+    entityId: id,
+    description: `Deleted inventory transaction ${id}`,
+    req,
+  });
+
+  res.json({ success: true, message: 'Movement record deleted successfully' });
+});
+

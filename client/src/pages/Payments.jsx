@@ -138,15 +138,15 @@ export default function Payments() {
   };
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-3 border-b border-slate-200">
+    <div className="space-y-5">
+      {/* Header — Clean & Simple */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-200">
         <div>
-          <h1 className="text-xl md:text-2xl font-bold text-slate-900 flex items-center space-x-2">
-            <span>Payments & Financial Accounts</span>
+          <h1 className="text-xl font-bold text-slate-900">
+            Payments & Accounts
           </h1>
-          <p className="text-xs text-slate-500 mt-1">
-            Accounts receivable receipts, supplier payouts, multi-method reconciliation, and daily cash closing.
+          <p className="text-xs text-slate-500 mt-0.5">
+            Manage incoming receipts, supplier payouts, and cash drawer reconciliations.
           </p>
         </div>
 
@@ -154,84 +154,83 @@ export default function Payments() {
           <button
             type="button"
             onClick={() => setShowCustomerPayModal(true)}
-            className="flex items-center space-x-1.5 px-3 py-2 rounded-xl text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 hover:bg-emerald-100 transition-colors cursor-pointer"
+            className="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-emerald-600 hover:bg-emerald-700 text-white transition-colors cursor-pointer"
           >
-            <ArrowDownLeft className="w-4 h-4" />
-            <span>Receive Payment (AR)</span>
+            <ArrowDownLeft className="w-3.5 h-3.5" />
+            <span>Receive (AR)</span>
           </button>
 
           <button
             type="button"
             onClick={() => setShowSupplierPayModal(true)}
-            className="flex items-center space-x-1.5 px-3 py-2 rounded-xl text-xs font-semibold bg-slate-100 text-slate-800 border border-slate-300 hover:bg-slate-200 transition-colors cursor-pointer"
+            className="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors cursor-pointer"
           >
-            <ArrowUpRight className="w-4 h-4" />
-            <span>Pay Supplier (AP)</span>
+            <ArrowUpRight className="w-3.5 h-3.5" />
+            <span>Pay Supplier</span>
           </button>
 
           <button
             type="button"
             onClick={() => setShowClosingModal(true)}
-            className="flex items-center space-x-1.5 px-3 py-2 rounded-xl text-xs font-semibold bg-blue-600 hover:bg-blue-700 text-white shadow-xs transition-colors cursor-pointer"
+            className="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-blue-600 hover:bg-blue-700 text-white transition-colors cursor-pointer"
           >
-            <Calendar className="w-4 h-4" />
-            <span>Daily Cash Closing</span>
+            <Calendar className="w-3.5 h-3.5" />
+            <span>Daily Closing</span>
           </button>
         </div>
       </div>
 
-      {/* Daily Cash Status Widget */}
+      {/* Daily Cash Status Summary */}
       {cashPreview && (
-        <div className="p-4 rounded-xl bg-white border border-slate-200 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-700 border border-blue-200 flex items-center justify-center font-bold text-lg">
-              ₹
-            </div>
-            <div>
-              <p className="text-xs font-bold text-slate-900">Today's Register Cash Balance</p>
-              <p className="text-[11px] text-slate-500">
-                In: ₹{cashPreview.cashIn?.toLocaleString('en-IN')} &bull; Out: ₹{cashPreview.cashOut?.toLocaleString('en-IN')} &bull; Expenses: ₹{cashPreview.expensesCash?.toLocaleString('en-IN')}
-              </p>
-            </div>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 p-4 rounded-xl bg-white border border-slate-200">
+          <div>
+            <p className="text-[11px] font-medium text-slate-500">Cash In Today</p>
+            <p className="text-lg font-bold text-emerald-600">₹{cashPreview.cashIn?.toLocaleString('en-IN')}</p>
           </div>
-
-          <div className="flex items-center space-x-6">
-            <div className="text-right">
-              <span className="text-[10px] text-slate-500 uppercase tracking-wider block font-medium">Expected Drawer Cash</span>
-              <span className="text-xl font-black text-slate-900">₹{cashPreview.expectedCash?.toLocaleString('en-IN')}</span>
+          <div>
+            <p className="text-[11px] font-medium text-slate-500">Cash Out</p>
+            <p className="text-lg font-bold text-slate-800">₹{cashPreview.cashOut?.toLocaleString('en-IN')}</p>
+          </div>
+          <div>
+            <p className="text-[11px] font-medium text-slate-500">Cash Expenses</p>
+            <p className="text-lg font-bold text-slate-800">₹{cashPreview.expensesCash?.toLocaleString('en-IN')}</p>
+          </div>
+          <div className="flex items-center justify-between sm:justify-end gap-3 sm:border-l sm:border-slate-100 sm:pl-4">
+            <div>
+              <p className="text-[11px] font-medium text-slate-500">Drawer Cash</p>
+              <p className="text-lg font-extrabold text-slate-900">₹{cashPreview.expectedCash?.toLocaleString('en-IN')}</p>
             </div>
-
             <button
               type="button"
               onClick={() => setShowClosingModal(true)}
-              className="px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-blue-50 text-blue-700 border border-blue-200 hover:bg-blue-100 cursor-pointer"
+              className="px-2.5 py-1 rounded-md text-xs font-medium bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors cursor-pointer"
             >
-              Reconcile Register
+              Reconcile
             </button>
           </div>
         </div>
       )}
 
-      {/* Filter Tabs */}
-      <div className="flex items-center space-x-2 text-xs">
+      {/* Clean Filter Tabs */}
+      <div className="flex items-center space-x-1 border-b border-slate-200 text-xs">
         {[
           { key: 'all', label: 'All Transactions', count: payments.length },
-          { key: 'in', label: 'Cash Inflow (+)', count: payments.filter((p) => p.direction === 'in').length },
-          { key: 'out', label: 'Cash Outflow (-)', count: payments.filter((p) => p.direction === 'out').length },
+          { key: 'in', label: 'Inflow (+)', count: payments.filter((p) => p.direction === 'in').length },
+          { key: 'out', label: 'Outflow (-)', count: payments.filter((p) => p.direction === 'out').length },
         ].map((f) => (
           <button
             key={f.key}
             type="button"
             onClick={() => setDirectionFilter(f.key)}
-            className={`px-3 py-1.5 rounded-xl font-semibold transition-colors flex items-center space-x-1.5 cursor-pointer ${
+            className={`px-3 py-2 font-medium transition-colors border-b-2 cursor-pointer flex items-center space-x-1.5 ${
               directionFilter === f.key
-                ? 'bg-blue-50 text-blue-700 border border-blue-200 shadow-xs'
-                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+                ? 'border-blue-600 text-blue-600 font-semibold'
+                : 'border-transparent text-slate-500 hover:text-slate-800'
             }`}
           >
             <span>{f.label}</span>
             <span className={`text-[10px] px-1.5 py-0.2 rounded-full ${
-              directionFilter === f.key ? 'bg-blue-100 text-blue-700' : 'bg-slate-200 text-slate-600'
+              directionFilter === f.key ? 'bg-blue-100 text-blue-700' : 'bg-slate-100 text-slate-500'
             }`}>
               {f.count}
             </span>
@@ -239,87 +238,85 @@ export default function Payments() {
         ))}
       </div>
 
-      {/* Transactions Table with Action Buttons */}
-      <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-xs">
+      {/* Transactions Table */}
+      <div className="bg-white border border-slate-200 rounded-xl overflow-hidden">
         <div className="overflow-x-auto">
           <table aria-label="Payments and Transactions Ledger Table" className="w-full text-left text-xs">
             <caption className="sr-only">Financial Payments and Receipts Ledger</caption>
-            <thead className="bg-slate-50 text-slate-600 uppercase tracking-wider text-[10px] border-b border-slate-200 font-semibold">
+            <thead className="bg-slate-50 text-slate-500 uppercase tracking-wider text-[10px] border-b border-slate-200 font-semibold">
               <tr>
-                <th scope="col" className="px-5 py-3.5">Payment # & Date</th>
-                <th scope="col" className="px-4 py-3.5">Transaction Type</th>
-                <th scope="col" className="px-4 py-3.5">Account / Party</th>
-                <th scope="col" className="px-4 py-3.5">Method & Reference</th>
-                <th scope="col" className="px-4 py-3.5 text-right">Amount</th>
-                <th scope="col" className="px-4 py-3.5 text-center">Status</th>
-                <th scope="col" className="px-4 py-3.5 text-center">Actions</th>
+                <th scope="col" className="px-4 py-3">Payment # & Date</th>
+                <th scope="col" className="px-4 py-3">Type</th>
+                <th scope="col" className="px-4 py-3">Party</th>
+                <th scope="col" className="px-4 py-3">Method</th>
+                <th scope="col" className="px-4 py-3 text-right">Amount</th>
+                <th scope="col" className="px-4 py-3 text-center">Status</th>
+                <th scope="col" className="px-4 py-3 text-center">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
               {loading ? (
                 <tr>
-                  <td colSpan="7" className="text-center py-12 text-slate-400">Loading financial payments...</td>
+                  <td colSpan="7" className="text-center py-10 text-slate-400">Loading payments...</td>
                 </tr>
               ) : filteredPayments.length === 0 ? (
                 <tr>
-                  <td colSpan="7" className="text-center py-12 text-slate-400">No payment transactions found.</td>
+                  <td colSpan="7" className="text-center py-10 text-slate-400">No payment transactions found.</td>
                 </tr>
               ) : (
                 filteredPayments.map((p) => (
-                  <tr key={p._id} className="hover:bg-slate-50/80 transition-colors">
-                    <td className="px-5 py-3.5">
+                  <tr key={p._id} className="hover:bg-slate-50 transition-colors">
+                    <td className="px-4 py-3">
                       <button
                         type="button"
                         onClick={() => setSelectedVoucher(p)}
-                        className="font-bold text-slate-900 hover:text-blue-600 font-mono text-left cursor-pointer transition-colors text-xs flex items-center space-x-1"
-                        title="Click to view Payment Voucher"
+                        className="font-medium text-blue-600 hover:underline font-mono text-left cursor-pointer"
+                        title="View Payment Voucher"
                       >
-                        <span className="underline decoration-transparent hover:decoration-blue-500 underline-offset-2">
-                          {p.number}
-                        </span>
+                        {p.number}
                       </button>
-                      <p className="text-[10px] text-slate-500">{new Date(p.date).toLocaleDateString('en-IN')}</p>
+                      <p className="text-[10px] text-slate-400">{new Date(p.date).toLocaleDateString('en-IN')}</p>
                     </td>
 
-                    <td className="px-4 py-3.5">
-                      <span className={`px-2 py-0.5 rounded text-[10px] uppercase font-bold ${
+                    <td className="px-4 py-3">
+                      <span className={`px-2 py-0.5 rounded text-[10px] font-medium uppercase ${
                         p.direction === 'in'
-                          ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
-                          : 'bg-rose-50 text-rose-700 border border-rose-200'
+                          ? 'bg-emerald-50 text-emerald-700'
+                          : 'bg-rose-50 text-rose-700'
                       }`}>
                         {p.kind?.replace('_', ' ')}
                       </span>
                     </td>
 
-                    <td className="px-4 py-3.5 text-slate-900 font-medium">
-                      {p.customer?.name || p.supplier?.name || 'Walk-in Retail Guest'}
+                    <td className="px-4 py-3 text-slate-800 font-medium">
+                      {p.customer?.name || p.supplier?.name || 'Walk-in Guest'}
                     </td>
 
-                    <td className="px-4 py-3.5 text-slate-600">
-                      <span className="uppercase font-semibold text-slate-900">{p.method}</span>
-                      {p.reference && <span className="text-[10px] text-slate-500 block font-mono">{p.reference}</span>}
+                    <td className="px-4 py-3 text-slate-600">
+                      <span className="uppercase text-slate-800 font-medium">{p.method}</span>
+                      {p.reference && <span className="text-[10px] text-slate-400 block font-mono">{p.reference}</span>}
                     </td>
 
-                    <td className="px-4 py-3.5 text-right">
-                      <span className={`font-bold text-sm ${p.direction === 'in' ? 'text-emerald-700' : 'text-rose-700'}`}>
+                    <td className="px-4 py-3 text-right">
+                      <span className={`font-semibold ${p.direction === 'in' ? 'text-emerald-600' : 'text-slate-800'}`}>
                         {p.direction === 'in' ? '+' : '-'}₹{p.amount?.toLocaleString('en-IN')}
                       </span>
                     </td>
 
-                    <td className="px-4 py-3.5 text-center">
-                      <span className="text-emerald-700 text-[10px] font-bold uppercase bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                    <td className="px-4 py-3 text-center">
+                      <span className="text-emerald-700 text-[10px] font-medium uppercase bg-emerald-50 px-2 py-0.5 rounded">
                         {p.status}
                       </span>
                     </td>
 
-                    <td className="px-4 py-3.5 text-center">
-                      <div className="flex items-center justify-center space-x-1.5">
+                    <td className="px-4 py-3 text-center">
+                      <div className="flex items-center justify-center space-x-1">
                         <button
                           type="button"
                           aria-label={`View payment voucher for ${p.number}`}
                           onClick={() => setSelectedVoucher(p)}
-                          title="View Payment Voucher (All-in-One Viewer)"
-                          className="p-1.5 text-slate-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg border border-slate-200 transition-colors cursor-pointer"
+                          title="View Voucher"
+                          className="p-1 text-slate-400 hover:text-blue-600 hover:bg-slate-100 rounded transition-colors cursor-pointer"
                         >
                           <FileText className="w-3.5 h-3.5" />
                         </button>
@@ -328,10 +325,10 @@ export default function Payments() {
                           aria-label={`Download PDF voucher for ${p.number}`}
                           onClick={() => {
                             generatePaymentVoucherPdf(p);
-                            toast.success(`Voucher ${p.number} PDF downloaded`);
+                            toast.success(`Voucher ${p.number} downloaded`);
                           }}
-                          title="Download jsPDF Voucher"
-                          className="p-1.5 text-slate-600 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg border border-slate-200 transition-colors cursor-pointer"
+                          title="Download PDF"
+                          className="p-1 text-slate-400 hover:text-emerald-600 hover:bg-slate-100 rounded transition-colors cursor-pointer"
                         >
                           <Download className="w-3.5 h-3.5" />
                         </button>
@@ -339,8 +336,8 @@ export default function Payments() {
                           type="button"
                           aria-label={`Delete payment record ${p.number}`}
                           onClick={() => handleDeletePayment(p._id, p.number)}
-                          title="Delete Payment Record"
-                          className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg border border-slate-200 transition-colors cursor-pointer"
+                          title="Delete"
+                          className="p-1 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded transition-colors cursor-pointer"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
                         </button>

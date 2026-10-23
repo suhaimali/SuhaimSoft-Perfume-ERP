@@ -107,7 +107,7 @@ export default function Users() {
 
   const handleDelete = async (id, name, isMasterAdmin) => {
     if (isMasterAdmin) {
-      toast.error('Master Admin account cannot be deleted');
+      toast.error('Administrator account cannot be deleted');
       return;
     }
     if (!window.confirm(`Are you sure you want to delete staff account "${name}"?`)) return;
@@ -122,93 +122,93 @@ export default function Users() {
   };
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-3 border-b border-slate-200">
+    <div className="space-y-5">
+      {/* Header — Clean & Simple */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-200">
         <div>
-          <h1 className="text-xl md:text-2xl font-bold text-slate-900 flex items-center space-x-2">
-            <span>Staff Users & Access Control (RBAC)</span>
+          <h1 className="text-xl font-bold text-slate-900">
+            Staff & Users
           </h1>
-          <p className="text-xs text-slate-500 mt-1">
-            Configure Master Admin, store managers, POS cashiers, inventory clerks, and module permission grants.
+          <p className="text-xs text-slate-500 mt-0.5">
+            Manage staff members and access permissions.
           </p>
         </div>
 
         <button
           type="button"
           onClick={() => setShowModal(true)}
-          className="flex items-center space-x-1.5 px-4 py-2.5 rounded-xl text-xs font-semibold bg-blue-600 hover:bg-blue-700 text-white shadow-xs transition-all cursor-pointer self-start sm:self-auto"
+          className="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-blue-600 hover:bg-blue-700 text-white transition-colors cursor-pointer self-start sm:self-auto"
         >
-          <Plus className="w-4 h-4" />
-          <span>Add Staff Account</span>
+          <Plus className="w-3.5 h-3.5" />
+          <span>Add Staff</span>
         </button>
       </div>
 
-      {/* Users table with Action Buttons */}
-      <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-xs">
+      {/* Users table */}
+      <div className="bg-white border border-slate-200 rounded-xl overflow-hidden">
         <div className="overflow-x-auto">
           <table aria-label="Staff User Accounts Table" className="w-full text-left text-xs text-slate-700">
             <caption className="sr-only">Staff User Accounts and RBAC Permissions Table</caption>
-            <thead className="bg-slate-50 text-slate-600 uppercase tracking-wider text-[10px] border-b border-slate-200 font-semibold">
+            <thead className="bg-slate-50 text-slate-500 uppercase tracking-wider text-[10px] border-b border-slate-200 font-semibold">
               <tr>
-                <th scope="col" className="px-5 py-3.5">Staff User</th>
-                <th scope="col" className="px-4 py-3.5">Assigned Role</th>
-                <th scope="col" className="px-4 py-3.5 text-center">Discount Limit</th>
-                <th scope="col" className="px-4 py-3.5 text-center">Status</th>
-                <th scope="col" className="px-4 py-3.5 text-center">Actions</th>
+                <th scope="col" className="px-4 py-3">Staff User</th>
+                <th scope="col" className="px-4 py-3">Role</th>
+                <th scope="col" className="px-4 py-3 text-center">Discount Limit</th>
+                <th scope="col" className="px-4 py-3 text-center">Status</th>
+                <th scope="col" className="px-4 py-3 text-center">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
               {loading ? (
                 <tr>
-                  <td colSpan="5" className="text-center py-12 text-slate-400">Loading user accounts...</td>
+                  <td colSpan="5" className="text-center py-10 text-slate-400">Loading user accounts...</td>
                 </tr>
               ) : users.length === 0 ? (
                 <tr>
-                  <td colSpan="5" className="text-center py-12 text-slate-400">No staff user accounts found.</td>
+                  <td colSpan="5" className="text-center py-10 text-slate-400">No staff user accounts found.</td>
                 </tr>
               ) : (
                 users.map((u) => (
-                  <tr key={u._id} className="hover:bg-slate-50/80 transition-colors">
-                    <td className="px-5 py-3.5">
-                      <p className="font-bold text-slate-900">{u.name}</p>
-                      <p className="text-[10px] text-slate-500">{u.email}</p>
+                  <tr key={u._id} className="hover:bg-slate-50 transition-colors">
+                    <td className="px-4 py-3">
+                      <p className="font-semibold text-slate-900">{u.name}</p>
+                      <p className="text-[10px] text-slate-400">{u.email}</p>
                     </td>
 
-                    <td className="px-4 py-3.5">
+                    <td className="px-4 py-3">
                       {u.isMasterAdmin ? (
-                        <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-blue-50 text-blue-700 border border-blue-200">
-                          Master Admin (All Modules)
+                        <span className="px-2 py-0.5 rounded text-[10px] font-medium bg-blue-50 text-blue-700">
+                          Administrator
                         </span>
                       ) : (
-                        <span className="px-2.5 py-0.5 rounded text-[10px] font-semibold bg-slate-100 text-slate-700 border border-slate-200">
+                        <span className="px-2 py-0.5 rounded text-[10px] font-medium bg-slate-100 text-slate-700">
                           {u.role?.name || 'Standard Staff'}
                         </span>
                       )}
                     </td>
 
-                    <td className="px-4 py-3.5 text-center font-bold text-blue-600">
-                      {u.isMasterAdmin ? '100% (Full)' : `${u.maxDiscountPercent || u.role?.maxDiscountPercent || 10}%`}
+                    <td className="px-4 py-3 text-center font-medium text-slate-700">
+                      {u.isMasterAdmin ? '100%' : `${u.maxDiscountPercent || u.role?.maxDiscountPercent || 10}%`}
                     </td>
 
-                    <td className="px-4 py-3.5 text-center">
-                      <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${
+                    <td className="px-4 py-3 text-center">
+                      <span className={`px-2 py-0.5 rounded text-[10px] font-medium uppercase ${
                         u.status === 'active'
-                          ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
-                          : 'bg-slate-100 text-slate-600 border border-slate-300'
+                          ? 'bg-emerald-50 text-emerald-700'
+                          : 'bg-slate-100 text-slate-600'
                       }`}>
                         {u.status}
                       </span>
                     </td>
 
-                    <td className="px-4 py-3.5 text-center">
-                      <div className="flex items-center justify-center space-x-1.5">
+                    <td className="px-4 py-3 text-center">
+                      <div className="flex items-center justify-center space-x-1">
                         <button
                           type="button"
                           aria-label={`Edit staff account for ${u.name}`}
                           onClick={() => openEditModal(u)}
-                          title="Edit Staff Account & Permissions"
-                          className="p-1.5 text-slate-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg border border-slate-200 transition-colors cursor-pointer"
+                          title="Edit"
+                          className="p-1 text-slate-400 hover:text-blue-600 hover:bg-slate-100 rounded transition-colors cursor-pointer"
                         >
                           <Edit2 className="w-3.5 h-3.5" />
                         </button>
@@ -217,10 +217,10 @@ export default function Users() {
                           disabled={u.isMasterAdmin}
                           aria-label={`Delete staff account for ${u.name}`}
                           onClick={() => handleDelete(u._id, u.name, u.isMasterAdmin)}
-                          title={u.isMasterAdmin ? 'Cannot delete Master Admin' : 'Delete Account'}
-                          className={`p-1.5 rounded-lg border border-slate-200 transition-colors ${
+                          title={u.isMasterAdmin ? 'Cannot delete Administrator' : 'Delete'}
+                          className={`p-1 rounded transition-colors ${
                             u.isMasterAdmin
-                              ? 'text-slate-300 cursor-not-allowed'
+                              ? 'text-slate-200 cursor-not-allowed'
                               : 'text-slate-400 hover:text-rose-600 hover:bg-rose-50 cursor-pointer'
                           }`}
                         >

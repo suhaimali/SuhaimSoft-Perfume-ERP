@@ -9,14 +9,14 @@
 
 **SuhaimSoft Perfume Business Management ERP** is an enterprise-grade full-stack MERN application built specifically for luxury fragrance brands, boutique perfume shops, retail outlets, wholesale distributors, and multi-branch perfume houses.
 
-It provides centralized management of products, fragrance taxonomy, multi-warehouse stock balances, suppliers, customer loyalty, purchase orders, fast POS billing with barcode scanner support, immutable financial ledgers, operating expenses, daily cash drawer reconciliations, staff RBAC permissions, and comprehensive Profit & Loss analytics.
+It provides centralized management of products, fragrance taxonomy, multi-warehouse stock balances, suppliers, customer loyalty, purchase orders, quick retail billing with barcode scanner support, immutable financial ledgers, operating expenses, daily cash drawer reconciliations, staff RBAC permissions, and comprehensive Profit & Loss analytics wrapped in a clean, simple, and minimalist user interface.
 
 ---
 
 ## 2. Technology Stack
 
-- **Frontend**: React.js (Vite)
-- **Styling**: Tailwind CSS v4 with bespoke luxury charcoal & gold palette
+- **Frontend**: React.js 19 (Vite)
+- **Styling**: Tailwind CSS v4 with clean, minimalist modern aesthetic
 - **State & Data Fetching**: TanStack React Query, React Context, Axios
 - **Charts & Data Visualization**: Recharts
 - **Icons**: Lucide React
@@ -25,22 +25,22 @@ It provides centralized management of products, fragrance taxonomy, multi-wareho
 - **Database**: MongoDB (Atlas ready, with automatic fallback in-memory replica set for dev & testing)
 - **Object Data Modeling**: Mongoose with atomic transaction support
 - **Authentication**: JWT with token-version instant revocation & bcrypt password hashing
-- **PDF Generation**: PDFKit (Sales Tax Invoices, Receipts, Purchase Vouchers)
+- **PDF Generation**: jsPDF & PDFKit (Sales Tax Invoices, Receipts, Purchase Vouchers, Payment Vouchers)
 - **Testing**: Automated Vitest integration test suite
 
 ---
 
 ## 3. Key Modules & Features
 
-### 1. Master Admin Dashboard
+### 1. Administrator Dashboard
 - Live database-backed metrics: Total products, bottle variants, active brands, suppliers, and customers.
 - Real-time stock counters, low-stock threshold triggers, and out-of-stock emergency alerts.
 - Today's sales vs. monthly revenue, gross margins, and customer receivables (AR) vs. supplier payables (AP).
 - 6-month interactive revenue and profit trend graphs.
 - Top-moving perfume variants by quantity and revenue.
-- Live stream of recent POS receipts, purchase orders, and inventory ledger movements.
+- Live stream of recent sales receipts, purchase orders, and inventory ledger movements.
 
-### 2. High-Speed POS Billing Terminal
+### 2. Quick Billing & Sales Terminal
 - Real-time fragrance search by perfume name, fragrance code, SKU, or barcode scanner input.
 - Quick filter buttons for major houses (Creed, Kurkdjian, Tom Ford, Roja, Ajmal Oud).
 - Line item quantity adjustments (+ / -) with automatic stock validation preventing overselling.
@@ -60,8 +60,9 @@ It provides centralized management of products, fragrance taxonomy, multi-wareho
 ### 4. Boutique Stock & Inventory Ledger
 - Streamlined single-branch boutique inventory management.
 - Real-time stock counts per perfume variant and batch number.
-- Immutable movement ledger recording every event (`opening`, `purchase_receipt`, `sale`, `adjustment`, `damaged`, `leaked`, `expired`).
-- Physical stock adjustments with audit reason tracking.
+- Clean tabbed interface: **Stock Levels** and **Audit Movement Ledger**.
+- Complete row actions on both tabs: **Edit** and **Delete** with automatic stock balance recalculation.
+- Physical stock adjustments with audit reason tracking (`opening`, `purchase_receipt`, `sale`, `adjustment`, `damaged`, `leaked`, `expired`).
 
 ### 5. Supplier Procurement & Goods Receiving
 - Complete purchase order workflow (PO creation -> approval -> partial or full goods receipt).
@@ -72,7 +73,7 @@ It provides centralized management of products, fragrance taxonomy, multi-wareho
 ### 6. Payments, Accounts & Daily Cash Closing
 - Accounts Receivable (AR) customer payment recording with automated invoice balance reduction.
 - Accounts Payable (AP) supplier payouts.
-- End-of-day register cash closing: compares system expected cash (Opening + Cash sales - Cash refunds - Cash expenses) against physical drawer count and logs overage/shortage differences.
+- End-of-day register cash closing: 4-metric stat bar comparing system expected cash (Opening + Cash sales - Cash refunds - Cash expenses) against physical drawer count and logs overage/shortage differences.
 
 ### 7. Profit & Loss, Valuation & Certified Reports
 - Comprehensive Income Statement: Sales Revenue - COGS = Gross Profit - Operating Expenses = Net Profit.
@@ -85,8 +86,8 @@ It provides centralized management of products, fragrance taxonomy, multi-wareho
 
 | Role | Email | Password | Permissions |
 | :--- | :--- | :--- | :--- |
-| **Master Admin** | `admin@suhaimsoft.com` | `Admin@12345` | Full unrestricted access to all modules, settings, and finances |
-| **POS Cashier** | `cashier@suhaimsoft.com` | `Cashier@12345` | POS Billing, Customer creation, and receipt printing |
+| **Administrator** | `admin@suhaimsoft.com` | `Admin@12345` | Full unrestricted access to all modules, settings, and finances |
+| **Cashier / Staff** | `cashier@suhaimsoft.com` | `Cashier@12345` | Store Billing, Customer creation, and receipt printing |
 
 *(One-click quick login buttons for these accounts are also available directly on the login page)*
 
@@ -102,7 +103,7 @@ It provides centralized management of products, fragrance taxonomy, multi-wareho
 
 1. **Install root & workspace dependencies**:
    ```bash
-   cd d:\perfume
+   cd "d:\SuhaimSoft Perfume ERP"
    cd server && npm install
    cd ../client && npm install
    cd ..
@@ -133,4 +134,4 @@ Run the complete Vitest test suite verifying authentication, RBAC, inventory ded
 npm test
 ```
 
-All 7 integration test suites execute against a test in-memory database and pass with zero errors.
+All integration test suites execute against a test in-memory database and pass with zero errors.

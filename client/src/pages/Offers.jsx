@@ -469,7 +469,7 @@ export default function Offers() {
                   className="rounded text-blue-600 focus:ring-blue-500"
                 />
                 <label htmlFor="couponActive" className="text-xs font-semibold text-slate-700 cursor-pointer">
-                  Coupon is active for POS and online billing
+                  Coupon is active for store and retail billing
                 </label>
               </div>
 
